@@ -1,5 +1,5 @@
 @startuml
-left to right direction
+top to bottom direction
 
 ' package Model{
     class Admin {
@@ -288,38 +288,38 @@ StationTimings "*" --* "1" Station
 ' Implemented by JPA Repository
 ' package Repository{
 
-    interface AdminRepository extends JpaRepository{
+    interface AdminRepository{
         + findByUsername(username:string):Admin
         + save(admin:Admin):void
         + findByUsernameAndPassword(String username,String password): Admin
         + findById(id:Long) : Admin
     }
 
-    interface ContactRepository extends JpaRepository{
+    interface ContactRepository{
         + findByEmail(email: string):Contact[]
     }
 
-    interface FeedbackRepository extends JpaRepository{
+    interface FeedbackRepository{
         + save(feedback:Feedback):void
     }
 
-    interface OperatingDayRepository extends JpaRepository{
+    interface OperatingDayRepository{
         + findByTrain(train:Train):OperatingDay[]
         + findByTrainTrainNo(trainNo:String):OperatingDay[]
     }
 
-    interface PassengerRepository extends JpaRepository{
+    interface PassengerRepository{
         + findByUser(u:User):Passenger[]
         + findByTicket(t:Ticket): Passenger[]
         + save(Passenger p): void
     }
 
-    interface PaymentRepository extends JpaRepository{
+    interface PaymentRepository{
         + findByTicket(t:Ticket):Payment
         + save(Payment p):void
     }
 
-    interface RouteRepository extends JpaRepository{
+    interface RouteRepository{
         + findByTrainTrainName(trainName:String):Route[]
         + findByTrainTrainNo(trainNo:String):Route
         + findRouteBetweenStation(src:Station,dest:Station):String[]
@@ -331,31 +331,31 @@ StationTimings "*" --* "1" Station
         +findByTrainAndDate(train: Train, date: Date): List<SeatAvailability>
     }
 
-    interface StationRepository extends JpaRepository{
+    interface StationRepository{
         + findByStationCode(stationCode:String):Station
         + findByStationNameContaining(stationName:String):Station[]
     }
 
-    interface StationTimingsRepository extends JpaRepository {
+    interface StationTimingsRepository {
         +findByStation(station: Station): StationTimings
         +findByRoute(route: Route): List<StationTimings>
     }
 
-    interface TicketRepository extends JpaRepository {
+    interface TicketRepository {
         +findByPNR(PNR: String): Ticket
         +findByUser(user: User): List<Ticket>
         +findByTrain_TrainNo(trainNo: String): List<Ticket>
         +findByStatus(status: TicketStatus): List<Ticket>
     }
 
-    interface TrainRepository extends JpaRepository {
+    interface TrainRepository {
         +findByTrainNo(trainNo: String): Train
         +findByTrainTypeContaining(trainType: String): List<Train>
         +findByTrainNameContaining(trainName: String): List<Train>
         +findByRoute(route: Route): Train
     }
 
-    interface UserRepository extends JpaRepository {
+    interface UserRepository {
         +findByUsername(username: String): User
         +findByEmail(email: String): User
         +findByUsernameAndPassword(username: String, password: String): User
@@ -380,6 +380,15 @@ UserRepository "1"--"1" User
 
 ' Interfaces
 ' package Interface{
+
+    interface AdminManagement {
+        + authenticate(Admin a):Admin
+        + saveAdmin (Admin a): void
+        + deleteAdmin(Admin a): void
+        + getAdmin(Long id): Admin
+        + findAll():Admin[]
+        + findByUsername(String username): Admin
+    }
 
     interface FeedbackManagement {
         + saveFeedback(feedback: Feedback): Feedback
@@ -461,14 +470,398 @@ UserRepository "1"--"1" User
         + addFareDiscount(Long ticketId): Ticket
     }
 
-    
+    ' SRP
+    interface TrainManagement {
+        List<Train> getAllTrains()
+        Train getTrainByTrainNo(String trainNo)
+        Train saveTrain(Train train)
+        Train updateTrain(String trainNo, Train updatedTrain)
+        void deleteTrain(String trainNo)
+        List<Train> searchTrainBySrcAndDest(String SRC, String DEST)
+        List<SeatAvailability> searchTrain(String SRC, String DEST, ClassType classes, Date date)
+    }
 
+    interface TrainSeatAvailibilityManagement {
+        void addSeatAvailabitity(SeatAvailability seatAvailability)
+        void deleteSeatAvailabitity(SeatAvailability seatAvailability)
+        boolean checkSeatAvailability(SeatAvailability seatAvailability)
+        void updateSeatAvailibity(SeatAvailability seatAvailability)
+        List<SeatAvailability> getAllSeatAvailabilities()
+        SeatAvailability getSeatAvailibity(Long id)
+        List<SeatAvailability> getSeatAvailibityForTrain(Train train, Date date)
+        SeatAvailability getSeatAvailibity(Train train, ClassType classType, Date date)
+        void addCancelledSeatNo(SeatAvailability seatAvailability, int seatNo)
+        void removeCancelledSeatNo(SeatAvailability seatAvailability, int seatNo)
+        void addWaitingList(SeatAvailability seatAvailability, Ticket waitingList)
+        void removeWaitingList(SeatAvailability seatAvailability, Ticket waitingList)
+        List<Ticket> getWaitingList(SeatAvailability seatAvailability)
+    }
 
-
-
+    interface UserManagement {
+        User addUser(User user)
+        boolean updateUser(User user)
+        boolean deleteUser(Long userId)
+        User searchUser(String username)
+        User searchUser(String username, String password)
+        User login(String username, String password)
+        User signUp(User user)
+        boolean changePassword(User user, String newPassword)
+        User viewUserDetails(String username)
+        List<User> viewAllUsers()
+        User getUserByUsername(String username)
+    }
 
 ' } 
 
+' Service package
+' package Service{
+
+    class AdminService implements AdminManagement {
+        - adminRepository: AdminRepository
+    }
+
+    class ContactService {
+        - contactRepository: ContactRepository
+        + saveContact(Contact contact): void
+        + deleteContact(Long id): void
+        + getContact(Long id): Contact
+        + getContact(String email): List<Contact>
+        + getAllContacts(): List<Contact>
+    }
+
+    class FeedbackService {
+        - feedbackRepository: FeedbackRepository
+        + saveFeedback(Feedback feedback): Feedback
+        + getFeedbackById(Long id): Feedback
+        + getAllFeedback(): List<Feedback>
+        + deleteFeedback(Long id): void
+    }
+
+    class OperatingDayService {
+        - operatingDayRepository: OperatingDayRepository
+        + addOperatingDay(OperatingDay operatingDay): OperatingDay
+        + getOperatingDayById(Long operatingDayId): OperatingDay
+        + updateOperatingDay(Long operatingDayId, OperatingDay updatedOperatingDay): OperatingDay
+        + deleteOperatingDay(Long operatingDayId): void
+        + getOperatingDaysByTrain(Train train): List<OperatingDay>
+        + getAllOperatingDays(): List<OperatingDay>
+        + getOperatingDaysByTrainNo(String trainNo): List<OperatingDay>
+    }
+
+    class PassengerService {
+        - passengerRepository: PassengerRepository
+        + getPassengersByTicket(Ticket ticket): List<Passenger>
+        + savePassenger(Passenger passenger): void
+        + deletePassenger(Passenger passenger): void
+        + deletePassengerById(Long id): void
+        + getPassengerById(Long id): Passenger
+        + getAllPassengers(): List<Passenger>
+        + getPassengerByUser(User u): List<Passenger>
+        + deletePassengerByTicket(Ticket ticket): void
+        + saveAllPassenger(List<Passenger> passengers): List<Passenger>
+    }
+
+    class PaymentService {
+        - paymentRepository: PaymentRepository
+        + getAllPayments(): List<Payment>
+        + getPaymentById(Long id): Payment
+        + savePayment(Payment payment): Payment
+        + updateTransactionDetails(Long paymentId, PaymentStatus ps): Payment
+        + updatePaymentStatus(Long paymentId, PaymentStatus status): Payment
+        + updatePrebookingDetails(Long paymentId, boolean prebooked, boolean isVeg): Payment
+        + deletePayment(Long id): void
+    }
+
+    class RouteService implements RouteManagement {
+        - routeRepository: RouteRepository
+    }
+
+    class SeatAvailabilityService implements TrainSeatAvailibilityManagement {
+        - seatAvailabilityRepository: SeatAvailabilityRepository
+    }
+
+    class StationService implements StationManagement{
+        - stationRepository : StationRepository
+    }
+
+    class StationTimingsService implements StationTimingsManagement{
+        - stationTimingsRepository : StationTimingsRepository
+    }
+    ' OCP
+    class TicketFareDiscountService implements TicketFareDiscount{
+        - ticketRepository: TicketRepository
+        + addFareDiscount(Long ticket_id): Ticket
+    }
+
+    class TicketService implements TicketManagement {
+        - ticketRepository: TicketRepository
+        - passengerService: PassengerService
+        - seatAvailabilityService: SeatAvailabilityService
+        - fareDiscountStrategy: TicketFareDiscount
+    }
+
+    class TrainService implements TrainManagement{
+        - trainRepository : TrainRepository
+        - routeService : RouteService
+    }
+
+    class UserService implements UserManagement{
+        - userRepository : UserRepository
+    }
+
+
+
+' }
+
+AdminService -- AdminRepository
+ContactService -- ContactRepository
+FeedbackService -- FeedbackRepository
+OperatingDayService -- OperatingDayRepository
+PassengerService -- PassengerRepository
+PaymentService -- PaymentRepository
+RouteService -- RouteRepository
+SeatAvailabilityService -- SeatAvailabilityRepository
+StationService -- StationRepository
+StationTimingsService -- StationTimingsRepository
+TicketService -- TicketRepository
+TicketService -- PassengerService
+TicketService -- SeatAvailabilityService
+
+TrainService -- TrainRepository
+TrainService -- RouteService
+UserService -- UserRepository
+
+' OCP
+TicketFareDiscountService -- TicketRepository
+TicketService -- TicketFareDiscount
+
+' Controller
+' package Controller{
+    class AdminContactUsController {
+        - contactService: ContactService
+        + AdminContactUsController(ContactService contactService)
+        + viewContactQueries(Model model): String
+    }
+
+    class AdminFeedbackController {
+        - feedbackService: FeedbackService
+        + feedback(Model model, HttpServletRequest request): String
+    }
+
+    
+    class AdminFrontendController {
+        - adminAuthenticationService: AdminService
+        + showLoginForm(Model m): String
+        + login(@ModelAttribute("user") Admin admin, Model model, HttpServletResponse response): String
+        + showDashboard(): String
+        + logout(Model model, HttpServletResponse response): String
+    }
+
+    class AdminOperatingDayController {
+        - operatingDayService: OperatingDayService
+        - trainService: TrainService
+        + addOperatingDay(Model model): String
+        + handleAdd(dayOfWeek: List<DayOfWeek>, trainNo: String, model: Model): String
+        + showOperatingDays(Model m): String
+        + deleteOperatingDay(operatingDayId: Long): String
+        + updateOperatingDay(operatingDayId: Long, m: Model): String
+        + handleUpdate(operatingDayId: Long, updatedOperatingDay: OperatingDay): String
+    }
+
+    class AdminRouteController {
+        - routeService: RouteService
+        + showAddRouteForm(Model model): String
+        + addRoute(route: Route, model: Model): String
+        + showRoutes(): ModelAndView
+        + deleteRoute(routeId: Long): String
+        + getRoutesBetweenStations(src: String, dest: String, model: Model): String
+    }
+
+    class AdminSeatAvailabilityFrontendController {
+        - seatAvailabilityService: SeatAvailabilityService
+        - trainService: TrainService
+        + addSeatAvailability(Model m): String
+        + addSeatAvailability(trainNo: String, date: String, classes: String, noOfCoaches: int, basePrice: double, farePerKM: double, seniorCitizenDiscount: double, cancellationCharge: double, model: Model): String
+        + showSeatAvailabilities(model: Model): String
+        + deleteSeatAvailability(id: String): String
+        + updateSeatAvailabilityForm(seatAvailabilityId: Long, model: Model): String
+        + updateSeatAvailability(seatAvailabilityId: Long, updatedSeatAvailability: SeatAvailability): String
+    }
+
+    class AdminStaffManagementFrontendController {
+        - adminService: AdminService
+        + addUser(Model m): String
+        + addAdmin(admin: Admin, model: Model): String
+        + showAdmins(Model m): String
+        + deleteAdmin(adminId: Long): String
+        + adminDetails(username: String, m: Model): String
+        + getSearch(m: Model): String
+        + searchAdmin(username: String, m: Model): String
+    }
+
+    class AdminStationManagementFrontendController {
+        - stationService: StationService
+        + addStation(Model m): String
+        + addStation(station: Station, model: Model): String
+        + showStations(model: Model): String
+        + deleteStation(stationCode: String): String
+        + updateStationForm(stationCode: String, model: Model): String
+        + updateStation(stationCode: String, updatedStation: Station): String
+    }
+
+    class AdminStationTimingManagementFrontendController {
+        - stationTimingsService: StationTimingsService
+        - routeService: RouteService
+        - stationService: StationService
+        - trainService: TrainService
+        + addStationTimingForm(Model model): String
+        + addStationTiming(trainNumber: String, stationCodes: List<String>, arrivalTimes: List<String>, departureTimes: List<String>, distances: List<Double>): String
+        + addSingleStationTimingForm(id: Long, stationCode: String, arrivalTime: String, departureTime: String, distance: Double): String
+        + showSingleStationTimingForm(id: Long, model: Model): String
+        + showStationTimings(model: Model): String
+        + showStationTimingsByRoute(route_id: Long, model: Model): String
+        + updateStationTimingForm(id: Long, model: Model): String
+        + updateStationTiming(id: Long, stationCode: String, arrivalTime: String, departureTime: String, distance: Double): String
+        + deleteStationTiming(id: Long): String
+    }
+
+
+    class AdminTicketController {
+        - ticketService: TicketService
+        + showTickets(model: Model): String
+        + showCancelledTickets(model: Model): String
+        + showWaitingTickets(model: Model): String
+        + deleteTicket(id: String): String
+    }
+
+    class AdminTrainController {
+        - trainService: TrainService
+        - routeService: RouteService
+        + addTrain(m: Model): String
+        + addTrain(train: Train, model: Model): String
+        + showTrains(model: Model): String
+        + deleteTrain(trainNo: String): String
+        + updateTrainForm(trainNo: String, model: Model): String
+        + updateTrain(trainNo: String, updatedTrain: Train): String
+    }
+
+    class AdminUserManagementFrontendController {
+        - userService: UserService
+        + addUser(m: Model): String
+        + addUser(user: User, model: Model): String
+        + showUsers(m: Model): String
+        + deleteUser(userId: Long): String
+    }
+
+    class FeedbackFrontendController {
+        - feedbackService: FeedbackService
+        - userService: UserService
+        - ticketService: TicketService
+        + feedback(ticketId: String, model: Model, request: HttpServletRequest, response: HttpServletResponse): String
+        + submitFeedback(rating: int, comments: String, username: String, ticketId: String, model: Model, request: HttpServletRequest): String
+    }
+
+    class HomeFrontendController {
+        - appname: String
+        - contactService: ContactService
+        + homePage(m: Model): String
+        + aboutPage(m: Model): String
+        + contactPage(m: Model): String
+        + contactPostPage(contact: Contact, m: Model): String
+        + basePage(m: Model, request: HttpServletRequest): String
+    }
+
+    class PaymentController {
+        - paymentService: PaymentService
+        - ticketService: TicketService
+        + makePayment(request: HttpServletRequest, response: HttpServletResponse): String
+        + payNow(response: HttpServletResponse, request: HttpServletRequest): String
+    }
+
+    class RouteController {
+        - routeService: RouteService
+        + showRoutes(model: Model, trainNo: String): String
+    }
+
+    class TicketFrontendController {
+        - ticketService: TicketService
+        - userService: UserService
+        - trainService: TrainService
+        - seatAvailabilityService: SeatAvailabilityService
+        - stationService: StationService
+        + getPassengers(names: List<String>, age: List<Integer>, gender: List<String>, birth: List<String>, isSeniorCitizen: List<String>, wantFood: String, chooseFood: String, countForFood: int, m: Model, response: HttpServletResponse, request: HttpServletRequest): String
+        + showTicket(m: Model, request: HttpServletRequest): String
+        + cancelTicket(ticketId: String, m: Model): String
+        + viewTicket(ticketId: String, response: HttpServletResponse): String
+    }
+
+    class TrainFrontendController {
+        - trainService: TrainService
+        - stationService: StationService
+        + searchTrain(model: Model): String
+        + viewTrainRoute(model: Model): String
+        + showTrainRoute(trainNo: String, m: Model): String
+        + searchTrainForm(date: String, source: String, destination: String, classType: String, model: Model, response: HttpServletResponse): String
+        + bookTrain(trainNo: String, seatAvailabilityId: String, model: Model, response: HttpServletResponse): String
+    }
+
+    class UserFrontendContoller {
+        - userService: UserService
+        - ticketService: TicketService
+        - errorMessage: String
+        + login(Model m): String
+        + loginForm(user: User, model: Model, response: HttpServletResponse): String
+        + showSignupForm(model: Model): String
+        + signup(user: User, model: Model, response: HttpServletResponse): String
+        + logout(model: Model, response: HttpServletResponse): String
+        + dashboard(model: Model, request: HttpServletRequest): String
+        + update(user: User, model: Model, request: HttpServletRequest): String
+        + changePassword(model: Model, request: HttpServletRequest): String
+        + changePassword(oldPassword: String, newPassword: String, confirmPassword: String, model: Model, request: HttpServletRequest): String
+        + myTrips(model: Model, request: HttpServletRequest): String
+    }
+
+
+
+
+' }
+
+
+AdminContactUsController -- ContactService
+AdminFeedbackController -- FeedbackService 
+AdminFrontendController -- AdminService
+AdminOperatingDayController -- OperatingDayService
+AdminOperatingDayController -- TrainService
+AdminRouteController -- RouteService
+AdminSeatAvailabilityFrontendController -- SeatAvailabilityService
+AdminSeatAvailabilityFrontendController -- TrainService
+AdminStaffManagementFrontendController -- AdminService
+AdminStationManagementFrontendController -- StationService
+AdminStationTimingManagementFrontendController -- StationTimingsService
+AdminStationTimingManagementFrontendController -- RouteService
+AdminStationTimingManagementFrontendController  -- StationService
+AdminStationTimingManagementFrontendController -- TrainService
+AdminTicketController -- TicketService
+AdminTrainController -- TrainService
+AdminTrainController -- RouteService
+AdminUserManagementFrontendController -- UserService
+FeedbackFrontendController -- FeedbackService
+FeedbackFrontendController -- UserService
+FeedbackFrontendController -- TicketService
+HomeFrontendController -- ContactService
+PaymentController -- PaymentService 
+PaymentController -- TicketService
+RouteController -- RouteService
+TicketFrontendController -- TicketService
+TicketFrontendController -- UserService
+TicketFrontendController --TrainService
+TicketFrontendController -- StationService
+TicketFrontendController -- SeatAvailabilityService
+TrainFrontendController -- TrainService
+TrainFrontendController -- StationService
+
+UserFrontendContoller -- UserService
+UserFrontendContoller -- TicketService
 
 
 

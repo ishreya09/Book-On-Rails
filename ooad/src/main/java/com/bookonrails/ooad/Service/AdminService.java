@@ -1,5 +1,6 @@
 package com.bookonrails.ooad.Service;
 
+import com.bookonrails.ooad.Interface.AdminManagement;
 import com.bookonrails.ooad.Model.Admin;
 import com.bookonrails.ooad.Repository.AdminRepository;
 
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AdminService {
+public class AdminService implements AdminManagement {
 
     @Autowired
     private AdminRepository adminRepository;
@@ -27,7 +28,6 @@ public class AdminService {
     public void deleteAdmin(Long id) {
         adminRepository.deleteById(id);
     }
-
     public Admin getAdmin(Long id) {
         return adminRepository.findById(id).get();
     }
@@ -36,9 +36,11 @@ public class AdminService {
         return adminRepository.findAll();
     }
 
+    @Override
     public Admin findByUsername(String username){
         return adminRepository.findByUsername(username);
     }
+
 
 
 }

@@ -13,7 +13,7 @@ public class TicketFareDiscountService implements TicketFareDiscount {
     @Autowired
     private TicketRepository ticketRepository;
 
-    @Override
+    // @Override
     public Ticket addFareDiscount(Long ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
         if (ticket != null) {

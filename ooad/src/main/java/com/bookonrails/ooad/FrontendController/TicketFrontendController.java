@@ -23,7 +23,6 @@ import com.bookonrails.ooad.Model.Ticket;
 import com.bookonrails.ooad.Model.TicketStatus;
 import com.bookonrails.ooad.Model.Train;
 import com.bookonrails.ooad.Model.User;
-import com.bookonrails.ooad.Service.PassengerService;
 import com.bookonrails.ooad.Service.SeatAvailabilityService;
 import com.bookonrails.ooad.Service.StationService;
 import com.bookonrails.ooad.Service.TicketService;
