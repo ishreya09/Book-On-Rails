@@ -1,5 +1,6 @@
 package com.bookonrails.ooad.Service;
 
+import com.bookonrails.ooad.Interface.TrainManagement;
 import com.bookonrails.ooad.Model.*;
 import com.bookonrails.ooad.Repository.RouteRepository;
 import com.bookonrails.ooad.Repository.TrainRepository;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TrainService {
+public class TrainService implements TrainManagement {
 
     @Autowired
     private TrainRepository trainRepository;

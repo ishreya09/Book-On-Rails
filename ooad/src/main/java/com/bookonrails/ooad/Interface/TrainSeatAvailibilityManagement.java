@@ -28,8 +28,5 @@ public interface TrainSeatAvailibilityManagement {
 
     public void removeWaitingList(SeatAvailability seatAvailability,Ticket waitingList);
 
-    public List<Ticket> getWaitingList(SeatAvailability seatAvailability);
-
-    public void assignSeats(SeatAvailability seatAvailability,Ticket ticket);
-   
+    public List<Ticket> getWaitingList(SeatAvailability seatAvailability);   
 }

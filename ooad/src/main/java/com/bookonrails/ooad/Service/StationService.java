@@ -1,5 +1,6 @@
 package com.bookonrails.ooad.Service;
 
+import com.bookonrails.ooad.Interface.StationManagement;
 import com.bookonrails.ooad.Model.Station;
 import com.bookonrails.ooad.Repository.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class StationService {
+public class StationService implements StationManagement {
 
     @Autowired
     private StationRepository stationRepository;

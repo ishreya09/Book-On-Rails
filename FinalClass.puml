@@ -1,0 +1,475 @@
+@startuml
+left to right direction
+
+' package Model{
+    class Admin {
+        - Id: Long
+        - username: String
+        - password: String
+        + getUsername(): String
+        + setUsername(username: String): void
+        + getPassword(): String
+        + setPassword(password: String): void
+    }
+
+    enum Birth {
+        Lower
+        Upper
+    }
+
+    enum Gender {
+        Male
+        Female
+        Other
+    }
+
+    class Contact {
+        - name : String
+        - email: String
+        - message: String
+        + getName():String
+        + setName(name:String):void
+        + getEmail():String
+        + setEmail(email:String):void
+        + getMessage():String
+        + setMessage(messgage:String):void
+    }
+
+    class Feedback {
+        - Id: Long
+        - user: User
+        - ticket: Ticket
+        - rating: int
+        - comment: String
+        + getUser(): User
+        + setUser(user: User): void
+        + getTicket(): Ticket
+        + setTicket(ticket: Ticket): void
+        + getRating(): int
+        + setRating(rating: int): void
+        + getComment(): String
+        + setComment(comment: String): void
+    }
+
+    class OperatingDay {
+        - id: Long
+        - train: Train
+        - dayOfWeek: DayOfWeek
+        + getDayOfWeek(): DayOfWeek
+        + setDayOfWeek(dayOfWeek: DayOfWeek): void
+        + getTrain(): Train
+        + setTrain(train: Train): void
+    }
+
+    class Route {
+        - Id: Long
+        - routeCode: String
+        - train: Train
+        - stationTimings: List<StationTimings>
+        + getStationTimings(): List<StationTimings>
+        + setStationTimings(stationTimings: List<StationTimings>): void
+        + getStationTimingsByStationCode(stationCode: String): StationTimings
+        + isStationPresent(stationCode: String): int
+        + getNextStation(currentStationCode: String): StationTimings
+        + getPreviousStation(currentStationCode: String): StationTimings
+        + getDistanceBetweenStations(stationCode1: String, stationCode2: String): double
+        + isRoutePresent(src: Station, dest: Station): boolean
+        + findSubRoute(SRC: Station, DEST: Station): List<StationTimings>
+        + calculateJourneyTime(src: Station, dest: Station): String
+    }
+
+    class SeatAvailability {
+        - id: Long
+        - train: Train
+        - date: Date
+        - no_of_coaches: int
+        - classes: ClassType
+        - availableSeats: int
+        - waitingList: List<Ticket>
+        - CancelledSeats: List<Integer>
+        - lastUnbookedLowerSeat: int
+        - lastUnbookedUpperSeat: int
+        - lastLowerSeat: int
+        - lastUpperSeat: int
+        - basePrice: double
+        - farePerKM: double
+        - seniorCitizenDiscount: double
+        - cancellationCharge: double
+        + SeatAvailability(no_of_coaches: int): void
+        + checkWaitingPassengers(): void
+        + isFull(): boolean
+        + allocateSeatNumber(b: Birth): int
+        + allocateSeatNumber(): int
+        + allocatePassengerSeatNo(passengers: List<Passenger>): void
+        + checkWaitingPassengers(passengers: List<Passenger>): boolean
+        + checkSeniorCitizenCount(passengers: List<Passenger>): int
+        + getFare(src: Station, dest: Station, passengers: List<Passenger>): double
+        + getPassengerSeats(p: List<Passenger>): List<Integer>
+        + cancelTicket(t: Ticket): void
+    }
+
+    class Station {
+        - id: Long
+        - stationCode: String
+        - stationName: String
+        + getStationCode(): String
+        + setStationCode(stationCode: String): void
+        + getStationName(): String
+        + setStationName(stationName: String): void
+    }
+
+    class StationTimings {
+        - id: Long
+        - station: Station
+        - arrivalTime: Time
+        - departureTime: Time
+        - distanceFromNextStation: double
+        - route: Route
+        + getId(): Long
+        + getStation(): Station
+        + setStation(station: Station): void
+        + getArrivalTime(): Time
+        + setArrivalTime(arrivalTime: Time): void
+        + getDepartureTime(): Time
+        + setDepartureTime(departureTime: Time): void
+        + getRoute(): Route
+        + setRoute(route: Route): void
+    }
+
+    class Ticket {
+        - ticket_id: Long
+        - PNR: String
+        - train: Train
+        - SRC: Station
+        - DEST: Station
+        - user: User
+        - passengers: List<Passenger>
+        - wantFood: Boolean
+        - veg: Boolean
+        - quantity: int
+        - date: Date
+        - classes: ClassType
+        - status: TicketStatus
+        - WaitingListNumber: int
+        - paymentStatus: PaymentStatus
+        - payment: Payment
+        - totalAmount: double
+        - foodprice: double
+        - seatAvailability: SeatAvailability
+        + Ticket()
+        + getTotalAmount(): double
+        + setTotalAmount(): void
+        + getCancellationCharge(): double
+        + getPNR(): String
+        + setPNR(pNR: String): void
+        + isPassengersWaiting(): boolean
+        + calculateFoodPrice(): double
+        + calculateFinalPrice(): double
+    }
+
+    class Passenger {
+        - id: Long
+        - user: User
+        - name: String
+        - age: int
+        - gender: Gender
+        - isSeniorCitizen: boolean
+        - isWaitingList: boolean
+        - birthpreference: Birth
+        - seatNo: int
+        - coachNo: int
+        - ticket: Ticket
+        + isWaitingList(): boolean
+        + setWaitingList(isWaitingList: boolean): void
+        + getSeatNo(): int
+        + setSeatNo(seatNo: int): void
+        + getCoachNo(): int
+        + setCoachNo(coachNo: int): void
+    }
+
+    class Train {
+        - trainNo: String
+        - trainName: String
+        - trainType: String
+        - operatingDays: List<OperatingDay>
+        - seatAvailability: List<SeatAvailability>
+        - route: Route
+        + getRouteList(): List<String>
+        + getSeatAvailabilityClasswise(classes: ClassType, date: Date): SeatAvailability
+        + getTotalAvailableSeats(): int
+        + getDaysRunning(): String
+        + getSchedule(): List<String>
+        + doesPathExist(SRC: Station, DEST: Station): boolean
+        + getArrivalTime(station: Station): Time
+        + getDepartureTime(station: Station): Time
+        + getStationTimings(): List<StationTimings>
+        + willTrainRunOnDayOfWeek(d: DayOfWeek): boolean
+        + getFare(SRC: Station, DEST: Station, classes: ClassType, date: Date): double
+        + getDistanceBetweenStations(SRC: Station, DEST: Station): double
+        + getDurationBetweenStations(SRC: Station, DEST: Station): void
+        + doesDateAndClassExist(date: Date, c: ClassType): boolean
+    }
+
+    class User {
+        - id: Long
+        - username: String
+        - password: String
+        - email: String
+        - firstName: String
+        - lastName: String
+        - phoneNumber: String
+        - address: String
+        + getUsername(): String
+        + setUsername(username: String): void
+        + getPassword(): String
+        + setPassword(password: String): void
+    }
+
+
+    class Payment {
+        - id: Long
+        - ticket: Ticket
+        - status: PaymentStatus
+        + getTicket(): Ticket
+        + setTicket(ticket: Ticket): void
+        + getStatus(): PaymentStatus
+        + setStatus(status: PaymentStatus): void
+    }
+
+    enum PaymentStatus{
+        Pending
+        Success
+        Failed
+    }
+
+    enum ClassType {
+        Sleeper
+        AC3Tier
+        AC2Tier
+    }
+
+    enum DayOfWeek {
+        Monday
+        Tuesday
+        Wednesday
+        Thursday
+        Friday
+        Saturday
+        Sunday
+    }
+
+    enum TicketStatus {
+        Booked
+        Cancelled
+        Waiting
+    }
+    
+' }
+
+' Model connectiopns
+Train "1" *-- "*" OperatingDay
+Train "1" *-- "*" SeatAvailability
+Train "1" *-- "*" Ticket
+Train "1" --* "1" Route
+
+Ticket "1" o-- "*" Passenger
+Ticket "1" --* "1" SeatAvailability
+Ticket "1" --* "1" User
+Ticket "1" -- "1" Feedback
+Ticket "1" *-- "1" Payment
+
+User "1"*--"*" Feedback
+User "1"*--"*" Passenger
+
+Route <-- StationTimings
+
+StationTimings "*" --* "1" Station
+
+' Implemented by JPA Repository
+' package Repository{
+
+    interface AdminRepository extends JpaRepository{
+        + findByUsername(username:string):Admin
+        + save(admin:Admin):void
+        + findByUsernameAndPassword(String username,String password): Admin
+        + findById(id:Long) : Admin
+    }
+
+    interface ContactRepository extends JpaRepository{
+        + findByEmail(email: string):Contact[]
+    }
+
+    interface FeedbackRepository extends JpaRepository{
+        + save(feedback:Feedback):void
+    }
+
+    interface OperatingDayRepository extends JpaRepository{
+        + findByTrain(train:Train):OperatingDay[]
+        + findByTrainTrainNo(trainNo:String):OperatingDay[]
+    }
+
+    interface PassengerRepository extends JpaRepository{
+        + findByUser(u:User):Passenger[]
+        + findByTicket(t:Ticket): Passenger[]
+        + save(Passenger p): void
+    }
+
+    interface PaymentRepository extends JpaRepository{
+        + findByTicket(t:Ticket):Payment
+        + save(Payment p):void
+    }
+
+    interface RouteRepository extends JpaRepository{
+        + findByTrainTrainName(trainName:String):Route[]
+        + findByTrainTrainNo(trainNo:String):Route
+        + findRouteBetweenStation(src:Station,dest:Station):String[]
+        + findByRouteCode(routeCode:String):Route
+    }
+
+    interface SeatAvailabilityRepository {
+        +findByTrainAndDateAndClasses(train: Train, date: Date, classType: ClassType): SeatAvailability
+        +findByTrainAndDate(train: Train, date: Date): List<SeatAvailability>
+    }
+
+    interface StationRepository extends JpaRepository{
+        + findByStationCode(stationCode:String):Station
+        + findByStationNameContaining(stationName:String):Station[]
+    }
+
+    interface StationTimingsRepository extends JpaRepository {
+        +findByStation(station: Station): StationTimings
+        +findByRoute(route: Route): List<StationTimings>
+    }
+
+    interface TicketRepository extends JpaRepository {
+        +findByPNR(PNR: String): Ticket
+        +findByUser(user: User): List<Ticket>
+        +findByTrain_TrainNo(trainNo: String): List<Ticket>
+        +findByStatus(status: TicketStatus): List<Ticket>
+    }
+
+    interface TrainRepository extends JpaRepository {
+        +findByTrainNo(trainNo: String): Train
+        +findByTrainTypeContaining(trainType: String): List<Train>
+        +findByTrainNameContaining(trainName: String): List<Train>
+        +findByRoute(route: Route): Train
+    }
+
+    interface UserRepository extends JpaRepository {
+        +findByUsername(username: String): User
+        +findByEmail(email: String): User
+        +findByUsernameAndPassword(username: String, password: String): User
+    }
+
+' }
+
+' Connections for Repository
+AdminRepository "1"--"1" Admin
+ContactRepository "1"--"1" Contact
+FeedbackRepository "1"--"1" Feedback
+OperatingDayRepository "1"--"1" OperatingDay
+PassengerRepository "1"--"1" Passenger
+PaymentRepository "1"--"1" Payment
+RouteRepository "1"--"1" Route
+SeatAvailabilityRepository "1"--"1" SeatAvailability
+StationRepository "1"--"1" Station
+StationTimingsRepository "1"--"1" StationTimings
+TicketRepository "1"--"1" Ticket
+TrainRepository "1"--"1" Train
+UserRepository "1"--"1" User
+
+' Interfaces
+' package Interface{
+
+    interface FeedbackManagement {
+        + saveFeedback(feedback: Feedback): Feedback
+        + getFeedbackById(id: Long): Feedback
+        + getAllFeedback(): List<Feedback>
+        + deleteFeedback(id: Long): void
+    }
+
+    interface RouteManagement {
+        + addRoute(route: Route): Route
+        + getRouteByRouteCode(routeCode: String): Route
+        + getRouteById(routeId: Long): Route
+        + updateRoute(routeId: Long, updatedRoute: Route): Route
+        + deleteRoute(routeId: Long): void
+        + getRouteBetweenStations(stationCode1: String, stationCode2: String): List<String>
+        + getAllRoutes(): List<Route>
+        + getRoutesBetweenStations(SRC: String, DEST: String): List<Route>
+        + getRoutesByTrain(trainName: String): List<Route>
+        + getRoutesPassingThroughStation(stationCode: String): List<Route>
+        + getRouteByTrainNo(trainNo: String): Route
+    }
+
+    interface StationManagement {
+        + addStation(station: Station): Station
+        + getAllStations(): List<Station>
+        + getStationByCode(stationCode: String): Station
+        + searchStationByName(stationName: String): List<Station>
+        + updateStation(stationCode: String, updatedStation: Station): Station
+        + deleteStation(stationCode: String): void
+        + findAll(): Station[]
+    }
+
+    interface StationTimingsManagement {
+        + addStationTimings(stationTiming: StationTimings): StationTimings
+        + getAllStationTimings(): List<StationTimings>
+        + getStationTimingsById(id: Long): StationTimings
+        + updateStationTimings(id: Long, stationTiming: StationTimings): StationTimings
+        + deleteStationTimings(id: Long): void
+        + getStationTimingsByRoute(route: Route): List<StationTimings>
+        + getStationTimingsByStation(station: Station): StationTimings
+    }
+
+    interface TicketAllocationOperations {
+        Ticket allocateSeats(Ticket ticket)
+        void cancelTicket(Ticket ticket)
+    }
+
+    interface TicketCRUDOperations {
+        List<Ticket> getAllTickets()
+        Ticket getTicketById(Long id)
+        Ticket saveTicket(Ticket ticket)
+        Ticket updateTicket(Ticket ticket)
+        void deleteTicket(Long id)
+        List<Ticket> getTicketByUser(User user)
+
+        Ticket updatePNR(Long ticketId, String newPNR)
+        Ticket updateTrain(Long ticketId, Train newTrain)
+        Ticket updateSource(Long ticketId, Station newSource)
+        Ticket updateDestination(Long ticketId, Station newDestination)
+        Ticket updatePassengers(Long ticketId, List<Passenger> newPassengers)
+        Ticket updateTicketDate(Long ticketId, Date newDate)
+        Ticket updateTicketStatus(Long ticketId, TicketStatus newStatus)
+        Ticket updatePaymentStatus(Long ticketId, PaymentStatus newPaymentStatus)
+    }
+
+    interface TicketQueryOperations {
+        List<Ticket> getCancelledTickets()
+        List<Ticket> getConfirmedTickets()
+        List<Ticket> getWaitingListTickets()
+    }
+    '  Shows Single Responsibility Principle
+    interface TicketManagement extends TicketCRUDOperations,TicketAllocationOperations,TicketQueryOperations {
+        include TicketCRUDOperations
+        include TicketAllocationOperations
+        include TicketQueryOperations
+    }
+    ' For OCP 
+    interface TicketFareDiscount{
+        + addFareDiscount(Long ticketId): Ticket
+    }
+
+    
+
+
+
+
+
+' } 
+
+
+
+
+@enduml

@@ -3,9 +3,7 @@ package com.bookonrails.ooad.Interface;
 import com.bookonrails.ooad.Model.Route;
 import java.util.List;
 
-public interface RouteManagement{
-    
-   
+public interface RouteManagement {
     Route addRoute(Route route);
     Route getRouteByRouteCode(String routeCode);
     Route getRouteById(Long routeId);
@@ -15,5 +13,6 @@ public interface RouteManagement{
     List<Route> getAllRoutes();
     List<Route> getRoutesBetweenStations(String SRC, String DEST);
     List<Route> getRoutesByTrain(String trainName);
-    List<Route> getRoutesPassingThroughStation(String stationCode);
+    List<Route> getRoutesPassingThroughStation(String stationCode);   
+    Route getRouteByTrainNo(String trainNo);
 }

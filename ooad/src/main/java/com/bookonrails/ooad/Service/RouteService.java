@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bookonrails.ooad.Interface.RouteManagement;
 import com.bookonrails.ooad.Model.Route;
 import com.bookonrails.ooad.Repository.RouteRepository;
 
 @Service
-public class RouteService {
+public class RouteService implements RouteManagement {
     @Autowired
     private RouteRepository routeRepository;
 

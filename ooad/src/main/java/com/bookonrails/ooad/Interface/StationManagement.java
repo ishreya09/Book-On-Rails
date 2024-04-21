@@ -16,4 +16,6 @@ public interface StationManagement {
     Station updateStation(String stationCode, Station updatedStation);
 
     void deleteStation(String stationCode);
+
+    List<Station> findAll();
 }

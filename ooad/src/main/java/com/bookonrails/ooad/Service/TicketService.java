@@ -9,6 +9,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bookonrails.ooad.Interface.TicketFareDiscount;
+import com.bookonrails.ooad.Interface.TicketManagement;
 import com.bookonrails.ooad.Model.Passenger;
 import com.bookonrails.ooad.Model.PaymentStatus;
 import com.bookonrails.ooad.Model.SeatAvailability;
@@ -20,7 +22,7 @@ import com.bookonrails.ooad.Model.User;
 import com.bookonrails.ooad.Repository.TicketRepository;
 
 @Service
-public class TicketService {
+public class TicketService implements TicketManagement {
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -30,6 +32,9 @@ public class TicketService {
 
     @Autowired
     private SeatAvailabilityService seatAvailabilityService;
+
+    @Autowired
+    private TicketFareDiscount fareDiscountStrategy; // Inject the FareDiscountStrategy interface
 
 
     public List<Ticket> getAllTickets() {
@@ -219,7 +224,10 @@ public class TicketService {
         ticketRepository.saveAll(ticketsToSave);
         seatAvailabilityService.updateSeatAvailibity(sa);
     }
-    
+
+    public Ticket addFareDiscount(Long ticketId) {
+        return fareDiscountStrategy.addFareDiscount(ticketId);
+    }
 
 
 

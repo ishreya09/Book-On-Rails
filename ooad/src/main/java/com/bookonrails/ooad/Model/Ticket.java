@@ -101,6 +101,10 @@ public class Ticket {
         this.totalAmount = seatAvailability.getFare(SRC, DEST, passengers);
     }
 
+    public void setFare(double amt){
+        this.totalAmount = amt;
+    }
+
     public double getCancellationCharge() {
         SeatAvailability s = train.getSeatAvailabilityClasswise(classes, date);
         return s.getCancellationCharge();

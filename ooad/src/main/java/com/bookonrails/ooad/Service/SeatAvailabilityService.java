@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-// import com.bookonrails.ooad.Interface.TrainSeatAvailibilityManagement;
+import com.bookonrails.ooad.Interface.TrainSeatAvailibilityManagement;
 import com.bookonrails.ooad.Model.ClassType;
 import com.bookonrails.ooad.Model.SeatAvailability;
 import com.bookonrails.ooad.Model.Ticket;
@@ -14,7 +14,7 @@ import com.bookonrails.ooad.Model.Train;
 import com.bookonrails.ooad.Repository.SeatAvailabilityRepository;
 
 @Service
-public class SeatAvailabilityService // extends TrainSeatAvailibilityManagement
+public class SeatAvailabilityService implements TrainSeatAvailibilityManagement
 {
     @Autowired
     private SeatAvailabilityRepository seatAvailabilityRepository;
@@ -90,10 +90,5 @@ public class SeatAvailabilityService // extends TrainSeatAvailibilityManagement
         return seatAvailability.getWaitingList();
 
     }
-
-
-
-   
-
 
 }

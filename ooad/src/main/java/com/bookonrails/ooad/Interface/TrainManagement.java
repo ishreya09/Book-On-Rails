@@ -1,21 +1,23 @@
 package com.bookonrails.ooad.Interface;
 
+import com.bookonrails.ooad.Model.ClassType;
+import com.bookonrails.ooad.Model.SeatAvailability;
+import com.bookonrails.ooad.Model.Train;
+
+import java.sql.Date;
 import java.util.List;
 
-import com.bookonrails.ooad.Model.*;
-
 public interface TrainManagement {
-    // CRUD operations for Train
-    public void addTrain(Train train);
-    public void updateTrain(Train train);
-    public void deleteTrain(String trainNo);
-    public Train getTrain(String trainNo);
-
-    // Search operations for Train
-    public Train searchTrain(String trainNo);
-    public List<Train> searchTrainBetweenStation(String source, String destination);
-
-    public void updateOperatingDays(List<OperatingDay> dayOfWeek);
-    public List<OperatingDay> getOperatingDays(Train train);
-
+    // Train Retrieval
+    List<Train> getAllTrains();
+    Train getTrainByTrainNo(String trainNo);
+    
+    // Train Modification
+    Train saveTrain(Train train);
+    Train updateTrain(String trainNo, Train updatedTrain);
+    void deleteTrain(String trainNo);
+    
+    // Train Search
+    List<Train> searchTrainBySrcAndDest(String SRC, String DEST);
+    List<SeatAvailability> searchTrain(String SRC, String DEST, ClassType classes, Date date);
 }
