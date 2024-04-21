@@ -93,6 +93,8 @@ button:hover {
     <h1>Feedback Form</h1>
     <form action="/feedback/submit" method="post">
         <div class="form-group">
+            <input type="hidden" id="username" name="username" th:value="${username}">
+            <input type="hidden" id="ticketId" name="ticketId" th:value="${ticketId}">
             <label for="rating">Rating:</label>
             <div class="rating-container">
                 <span class="rating-star" onclick="setRating(1)">&#9733;</span>

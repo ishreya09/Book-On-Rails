@@ -35,7 +35,7 @@ public class FeedbackFrontendController {
     @Autowired
     private TicketService ticketService;
     @GetMapping("/give-feedback")
-    public String feedback(@RequestParam("ticketId") String ticketId ,Model model, HttpServletRequest request) {
+    public String feedback(@RequestParam("ticketId") String ticketId ,Model model, HttpServletRequest request, HttpServletResponse response) {
         // Get the cookie with the name "username"
         String username = null;
         Cookie[] cookies = request.getCookies();
@@ -50,22 +50,35 @@ public class FeedbackFrontendController {
         // Set the username as a model attribute
         model.addAttribute("username", username);
         }
+        else{
+            model.addAttribute("message", "user not logged in");
+            return "error";
+        }
+
+        // set ticketId cookie
+        Cookie ticketIdCookie = new Cookie("ticketId", ticketId);
+        ticketIdCookie.setMaxAge(60*60*24);
+        ticketIdCookie.setPath("/");
+        response.addCookie(ticketIdCookie);
+
 
         model.addAttribute("ticketId", ticketId);
         return "user/feedback";
     }
 
-    @PostMapping("user/feedback")
+    @PostMapping("/submit")
     public String submitFeedback(@RequestParam("rating") int rating,
                                  @RequestParam("comments") String comments,
                                  @RequestParam("username") String username,
                                  @RequestParam("ticketId") String ticketId,
                                  Model model,
                                  HttpServletRequest request) {
-        if (username != null) {
+        if (username == null) {
             // Set the username as a model attribute
             model.addAttribute("message", "user not logged in");
+            return "error";
         }
+
         Ticket t= ticketService.getTicketById(Long.parseLong(ticketId));
         User u = userService.getUserByUsername(username);
         Feedback feedback = new Feedback();
