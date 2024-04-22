@@ -19,6 +19,7 @@ import com.bookonrails.ooad.Model.Ticket;
 import com.bookonrails.ooad.Model.TicketStatus;
 import com.bookonrails.ooad.Model.Train;
 import com.bookonrails.ooad.Model.User;
+import com.bookonrails.ooad.Repository.SeatAvailabilityRepository;
 import com.bookonrails.ooad.Repository.TicketRepository;
 
 @Service
@@ -31,7 +32,7 @@ public abstract class TicketAbstractService implements TicketManagement {
     private PassengerService passengerService;
 
     @Autowired
-    private SeatAvailabilityService seatAvailabilityService;
+    private SeatAvailabilityRepository seatAvailabilityRepository;
 
     @Autowired
     private TicketFareDiscount fareDiscountStrategy; // Inject the FareDiscountStrategy interface
@@ -176,7 +177,7 @@ public abstract class TicketAbstractService implements TicketManagement {
         else{
             t.setStatus(TicketStatus.Confirmed);
         }
-        seatAvailabilityService.updateSeatAvailibity(s);
+        seatAvailabilityRepository.save(s);
         Ticket saved_ticket= saveTicket(t);
         return saved_ticket;
     }
@@ -222,7 +223,7 @@ public abstract class TicketAbstractService implements TicketManagement {
         }
     
         ticketRepository.saveAll(ticketsToSave);
-        seatAvailabilityService.updateSeatAvailibity(sa);
+        seatAvailabilityRepository.save(sa);
     }
 
     public Ticket addFareDiscount(Long ticketId,double discount) {
