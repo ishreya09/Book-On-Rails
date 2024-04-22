@@ -150,7 +150,7 @@ public class TicketFrontendController {
         }
         Ticket saved_ticket = ticketService.saveTicket(ticket);
         // Adheres to Open close principle
-        ticketService.addFareDiscount(saved_ticket.getId());
+        ticketService.addFareDiscount(saved_ticket.getId(),50.0);
         // Set cookie for saved ticket
         Cookie ticketIdCookie = new Cookie("ticketId", saved_ticket.getId().toString());
         ticketIdCookie.setMaxAge(7 * 24 * 60 * 60);

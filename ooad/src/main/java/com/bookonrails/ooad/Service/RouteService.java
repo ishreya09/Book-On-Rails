@@ -14,7 +14,7 @@ import com.bookonrails.ooad.Repository.RouteRepository;
 @Service
 public class RouteService implements RouteManagement {
     @Autowired
-    private RouteRepository routeRepository;
+    private RouteRepository routeRepository; // dependency injection
 
     public Route addRoute(Route route) {
         return routeRepository.save(route);

@@ -225,8 +225,8 @@ public class TicketService implements TicketManagement {
         seatAvailabilityService.updateSeatAvailibity(sa);
     }
 
-    public Ticket addFareDiscount(Long ticketId) {
-        return fareDiscountStrategy.addFareDiscount(ticketId);
+    public Ticket addFareDiscount(Long ticketId,double discount) {
+        return fareDiscountStrategy.addFareDiscount(ticketId,discount);
     }
 
 

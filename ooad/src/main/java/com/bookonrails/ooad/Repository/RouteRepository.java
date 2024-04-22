@@ -10,11 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.bookonrails.ooad.Model.Route;
 
-// import jakarta.persistence.EntityManager;
-
-// import org.springframework.beans.factory.annotation.Autowired;
-
-
 @Repository
 public interface RouteRepository extends JpaRepository<Route, Long> {
     Route findByRouteCode(String routeCode);
