@@ -821,6 +821,20 @@ TicketService -- TicketFareDiscount
         + myTrips(model: Model, request: HttpServletRequest): String
     }
 
+    class TatkalTicket extends TicketAbstractService{
+        +addFareDiscount(long ticketId,double discount):Ticket
+
+    }
+
+    class GeneralTicket extends TicketAbstractService{
+        +addFareDiscount(long ticketId,double discount):Ticket
+
+    }
+
+    class TicketAbstractService implements TicketManagement{
+        
+    }
+
 
 
 
