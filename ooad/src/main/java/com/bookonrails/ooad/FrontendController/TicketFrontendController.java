@@ -23,8 +23,10 @@ import com.bookonrails.ooad.Model.Ticket;
 import com.bookonrails.ooad.Model.TicketStatus;
 import com.bookonrails.ooad.Model.Train;
 import com.bookonrails.ooad.Model.User;
+import com.bookonrails.ooad.Service.GeneralTicket;
 import com.bookonrails.ooad.Service.SeatAvailabilityService;
 import com.bookonrails.ooad.Service.StationService;
+import com.bookonrails.ooad.Service.TatkalTicket;
 import com.bookonrails.ooad.Service.TicketService;
 import com.bookonrails.ooad.Service.TrainService;
 import com.bookonrails.ooad.Service.UserService;
@@ -51,6 +53,23 @@ public class TicketFrontendController {
 
     @Autowired
     private StationService stationService;
+
+    @Autowired
+    private GeneralTicket generalTicket;
+    
+    @Autowired
+    private TatkalTicket tatkalTicket;
+
+    private boolean CheckTatkal (Date todayDate,Date ticketDate){
+        // check if ticket is tatkal
+        // ticket is tatkal if booked one day before
+        // if ticket is booked today, it is also tatkal
+        if(todayDate.compareTo(ticketDate)<=1){
+            return true;
+        }
+        return false;
+
+    }
 
     @PostMapping("/reserve")
     public String getPassengers(@RequestParam("passengerName[]") List<String> names,
@@ -151,6 +170,18 @@ public class TicketFrontendController {
         Ticket saved_ticket = ticketService.saveTicket(ticket);
         // Adheres to Open close principle
         ticketService.addFareDiscount(saved_ticket.getId(),50.0);
+        // check if ticket is general or tatkal based on date
+        // get Today's date
+        Date todayDate = new Date(System.currentTimeMillis());
+        if(CheckTatkal(todayDate,Date.valueOf(date))){
+            // if tatkal, add tatkal charge
+            tatkalTicket.addFareDiscount(saved_ticket.getId(), 20);
+        }
+        else{
+            // if general, add tax
+            generalTicket.addFareDiscount(saved_ticket.getId(), 50);
+        }
+        
         // Set cookie for saved ticket
         Cookie ticketIdCookie = new Cookie("ticketId", saved_ticket.getId().toString());
         ticketIdCookie.setMaxAge(7 * 24 * 60 * 60);

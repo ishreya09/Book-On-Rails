@@ -1,10 +1,12 @@
 package com.bookonrails.ooad.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.bookonrails.ooad.Model.Ticket;
 import com.bookonrails.ooad.Repository.TicketRepository;
 
+@Service
 public class TatkalTicket extends TicketAbstractService {
 
     @Autowired
