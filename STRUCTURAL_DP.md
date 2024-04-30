@@ -561,3 +561,65 @@ In this example:
 - `ConcretePenWithRefill` represents a concrete flyweight object for a pen with refill, and `ConcretePenWithoutRefill` represents a pen without refill.
 - The `PenFactory` class manages the creation and retrieval of flyweight pen objects, reusing existing instances whenever possible.
 - The client code demonstrates how to use the flyweight pattern to create and draw pens with different refill colors, ensuring that only one instance is created for each color.
+
+# Antipatterns - Architecture and Design
+
+In the realm of software development, while patterns represent good practices, antipatterns are the opposite—they describe commonly occurring solutions to problems that lead to negative consequences. Let's delve into some common antipatterns and their refactored solutions.
+
+#### Analysis Paralysis
+**Definition:** This antipattern occurs when there's excessive analysis without concrete decisions or progress. It leads to project delays, increased costs, and a lack of tangible outcomes.
+
+**Symptoms and Consequences:**
+- Multiple project restarts and rework.
+- Analysis phase consumes resources without clear endpoints.
+- Lack of user interaction in the analysis phase.
+  
+**Typical Causes:**
+- Overreliance on waterfall development methodologies.
+- Management's hesitation to proceed to the design phase.
+- Undefined goals in the analysis phase.
+
+**Refactored Solution:** Embrace incremental development, focusing on internal and external increments. Internal increments build essential infrastructure, while external increments deliver user-visible functionality.
+
+```java
+// Incremental development example
+public class IncrementalDevelopment {
+    // Internal increment for infrastructure
+    public void buildInfrastructure() {
+        // Implementation
+    }
+    
+    // External increment for user-visible functionality
+    public void deliverFunctionality() {
+        // Implementation
+    }
+}
+```
+
+#### Vendor Lock-In
+**Definition:** This antipattern occurs when a project becomes overly dependent on a particular vendor's technology, leading to issues during upgrades and maintenance.
+
+**Symptoms and Consequences:**
+- Project maintenance tied to commercial product upgrades.
+- Delayed or undelivered product features.
+- Deviation from advertised open systems standards.
+
+**Typical Causes:**
+- Lack of effective conformance process for standards.
+- Selection based solely on marketing without technical evaluation.
+- Direct dependence on the product for programming.
+
+**Refactored Solution:** Implement an isolation layer to separate software packages and technologies, ensuring independence from specific vendors.
+
+```java
+// Isolation layer example
+public class IsolationLayer {
+    // Separates application from infrastructure
+    public void separateInfrastructure() {
+        // Implementation
+    }
+}
+```
+
+### Conclusion
+Understanding and identifying antipatterns is crucial for improving software development practices. By recognizing common pitfalls and implementing refactored solutions, teams can mitigate risks and deliver higher-quality software.
