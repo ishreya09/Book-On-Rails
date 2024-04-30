@@ -1,5 +1,13 @@
 # BEHAVIORAL DESIGN PATTERNS
 
+ Behavioral design patterns are design patterns that identify common communication patterns
+ between objects and realize these patterns.
+ These patterns increase flexibility in carrying out this communication.
+ Behavioral patterns influence how state and behavior flow through a system.
+ By optimizing how state and behavior are transferred and modified, you can simplify, optimize,
+ and increase the maintainability of an application
+
+
 # Chain of Responsibility Pattern
 
 The Chain of Responsibility pattern is a behavioral design pattern that allows an object to pass a request along a chain of handlers. Each handler decides either to process the request or to pass it along the chain. This pattern decouples senders and receivers of requests.
