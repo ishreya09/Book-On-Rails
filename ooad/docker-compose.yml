@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # Spring Boot Application
+  app:
+    image: ooad-app:latest
+    container_name: ooad-app
+    ports:
+      - "4000:4000"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/BookOnRails
+      - SPRING_DATASOURCE_USERNAME=springuser
+      - SPRING_DATASOURCE_PASSWORD=ThePassword
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+    depends_on:
+      - mysql
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: BookOnRails
+      MYSQL_USER: springuser
+      MYSQL_PASSWORD: ThePassword
+    ports:
+      - "9000:3306" # Use the default port mapping for MySQL
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
